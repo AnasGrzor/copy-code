@@ -4,72 +4,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Paste App</title>
+    <title>Programiz</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            background-color: #f4f4f9;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #111827;
+            color: #f9fafb;
         }
 
         h1 {
-            color: #333;
-            text-align: center;
+            color: #f9fafb;
+            text-align: left;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
 
         .editor-container {
-            background: white;
+            background: #1f2937;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #374151;
             margin-bottom: 30px;
         }
 
         textarea {
             width: 100%;
-            height: 150px;
-            padding: 10px;
-            border: 1px solid #ddd;
+            height: 200px;
+            padding: 12px;
+            background-color: #111827;
+            color: #d1d5db;
+            border: 1px solid #374151;
             border-radius: 4px;
-            font-family: monospace;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             box-sizing: border-box;
             resize: vertical;
         }
 
         button {
-            display: block;
-            width: 100%;
-            padding: 10px;
+            display: inline-block;
+            width: auto;
+            padding: 8px 16px;
             margin-top: 10px;
-            background-color: #007bff;
+            background-color: #2563eb;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #1d4ed8;
         }
 
         .paste-item {
-            background: white;
+            background: #1f2937;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #374151;
             margin-bottom: 15px;
             white-space: pre-wrap;
             word-wrap: break-word;
-            border-left: 5px solid #007bff;
         }
 
         .timestamp {
             font-size: 0.8em;
-            color: #888;
-            margin-bottom: 5px;
+            color: #9ca3af;
         }
 
         .paste-header {
@@ -77,39 +81,27 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            border-bottom: 1px solid #374151;
+            padding-bottom: 8px;
         }
 
         .copy-btn {
-            width: auto;
+            background-color: #374151;
             margin-top: 0;
-            padding: 4px 8px;
-            font-size: 12px;
-            background-color: #6c757d;
         }
 
         .copy-btn:hover {
-            background-color: #5a6268;
-        }
-
-        .remove-btn {
-            width: auto;
-            margin-top: 0;
-            margin-left: 5px;
-            padding: 4px 8px;
-            font-size: 12px;
-            background-color: #dc3545;
-        }
-
-        .remove-btn:hover {
-            background-color: #c82333;
+            background-color: #4b5563;
         }
     </style>
 </head>
 
 <body>
+    <h1>Programiz Online Java Compiler</h1>
+
     <div class="editor-container">
-        <textarea id="pasteContent" placeholder="Paste your content here..."></textarea>
-        <button onclick="submitPaste()">Post Paste</button>
+        <textarea id="pasteContent" placeholder="// Type your code or paste stuff here..."></textarea>
+        <button onclick="submitPaste()">Run</button>
     </div>
 
     <div id="pastesList">
@@ -139,18 +131,11 @@
                     copyBtn.innerText = 'Copy';
                     copyBtn.onclick = () => copyToClipboard(copyBtn, paste.content);
 
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.innerText = 'Hide';
-                    removeBtn.onclick = () => div.remove();
-
-                    const actions = document.createElement('div');
-                    actions.appendChild(copyBtn);
-                    actions.appendChild(removeBtn);
-                    header.appendChild(actions);
+                    header.appendChild(copyBtn);
 
                     const contentDiv = document.createElement('div');
                     contentDiv.textContent = paste.content;
+                    contentDiv.style.fontFamily = 'monospace';
 
                     div.appendChild(header);
                     div.appendChild(contentDiv);
@@ -202,8 +187,8 @@
 
         // Fetch pastes on load
         fetchPastes();
-        // Periodically refresh pastes every 5 seconds
-        setInterval(fetchPastes, 5000);
+        // Periodically refresh pastes every 60 seconds
+        setInterval(fetchPastes, 60000);
     </script>
 </body>
 
