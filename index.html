@@ -90,6 +90,19 @@
         .copy-btn:hover {
             background-color: #5a6268;
         }
+
+        .remove-btn {
+            width: auto;
+            margin-top: 0;
+            margin-left: 5px;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: #dc3545;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 
@@ -125,7 +138,16 @@
                     copyBtn.className = 'copy-btn';
                     copyBtn.innerText = 'Copy';
                     copyBtn.onclick = () => copyToClipboard(copyBtn, paste.content);
-                    header.appendChild(copyBtn);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.innerText = 'Hide';
+                    removeBtn.onclick = () => div.remove();
+
+                    const actions = document.createElement('div');
+                    actions.appendChild(copyBtn);
+                    actions.appendChild(removeBtn);
+                    header.appendChild(actions);
 
                     const contentDiv = document.createElement('div');
                     contentDiv.textContent = paste.content;
