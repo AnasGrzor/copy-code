@@ -71,6 +71,25 @@
             color: #888;
             margin-bottom: 5px;
         }
+
+        .paste-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            width: auto;
+            margin-top: 0;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: #6c757d;
+        }
+
+        .copy-btn:hover {
+            background-color: #5a6268;
+        }
     </style>
 </head>
 
@@ -97,12 +116,41 @@
                     div.className = 'paste-item';
 
                     const time = new Date(paste.timestamp).toLocaleString();
-                    div.innerHTML = `<div class="timestamp">${time}</div><div>${escapeHtml(paste.content)}</div>`;
+
+                    const header = document.createElement('div');
+                    header.className = 'paste-header';
+                    header.innerHTML = `<span class="timestamp">${time}</span>`;
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerText = 'Copy';
+                    copyBtn.onclick = () => copyToClipboard(copyBtn, paste.content);
+                    header.appendChild(copyBtn);
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.textContent = paste.content;
+
+                    div.appendChild(header);
+                    div.appendChild(contentDiv);
                     list.appendChild(div);
                 });
             } catch (err) {
                 console.error('Error fetching pastes:', err);
             }
+        }
+
+        function copyToClipboard(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                btn.style.backgroundColor = '#28a745';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Unable to copy', err);
+            });
         }
 
         async function submitPaste() {
