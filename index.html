@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Paste App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .editor-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .paste-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border-left: 5px solid #007bff;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="editor-container">
+        <textarea id="pasteContent" placeholder="Paste your content here..."></textarea>
+        <button onclick="submitPaste()">Post Paste</button>
+    </div>
+
+    <div id="pastesList">
+        <!-- Pastes will appear here -->
+    </div>
+
+    <script>
+        async function fetchPastes() {
+            try {
+                const response = await fetch('/api/pastes');
+                const pastes = await response.json();
+                const list = document.getElementById('pastesList');
+                list.innerHTML = '';
+
+                pastes.forEach(paste => {
+                    const div = document.createElement('div');
+                    div.className = 'paste-item';
+
+                    const time = new Date(paste.timestamp).toLocaleString();
+                    div.innerHTML = `<div class="timestamp">${time}</div><div>${escapeHtml(paste.content)}</div>`;
+                    list.appendChild(div);
+                });
+            } catch (err) {
+                console.error('Error fetching pastes:', err);
+            }
+        }
+
+        async function submitPaste() {
+            const textarea = document.getElementById('pasteContent');
+            const content = textarea.value;
+
+            if (!content.trim()) return;
+
+            try {
+                await fetch('/api/pastes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                textarea.value = '';
+                fetchPastes();
+            } catch (err) {
+                console.error('Error posting paste:', err);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Fetch pastes on load
+        fetchPastes();
+        // Periodically refresh pastes every 5 seconds
+        setInterval(fetchPastes, 5000);
+    </script>
+</body>
+
+</html>
